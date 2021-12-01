@@ -21,12 +21,11 @@ fn part_1(depths: &Vec<i32>) -> usize {
 }
 
 fn part_2(depths: &Vec<i32>) -> usize {
-    part_1(
-        &depths
-            .windows(3)
-            .map(|triplet| triplet[0] + triplet[1] + triplet[2])
-            .collect(),
-    )
+    // "a + b + c < b + c + d" can be simplified to "a < d"
+    depths
+        .windows(4)
+        .filter(|quartet| quartet[0] < quartet[3])
+        .count()
 }
 
 fn read_file(filename: &str) -> Vec<i32> {
