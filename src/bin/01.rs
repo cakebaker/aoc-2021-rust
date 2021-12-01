@@ -16,11 +16,11 @@ fn main() -> Result<(), &'static str> {
     Ok(())
 }
 
-fn part_1(depths: &Vec<i32>) -> usize {
+fn part_1(depths: &[i32]) -> usize {
     depths.windows(2).filter(|pair| pair[0] < pair[1]).count()
 }
 
-fn part_2(depths: &Vec<i32>) -> usize {
+fn part_2(depths: &[i32]) -> usize {
     // "a + b + c < b + c + d" can be simplified to "a < d"
     depths
         .windows(4)
