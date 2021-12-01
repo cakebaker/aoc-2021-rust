@@ -9,11 +9,24 @@ fn main() -> Result<(), &'static str> {
     }
 
     let depths = read_file(&args[0]);
-    let result = depths.windows(2).filter(|pair| pair[0] < pair[1]).count();
 
-    println!("Result of puzzle 1: {}", result);
+    println!("Result of puzzle 1: {}", part_1(&depths));
+    println!("Result of puzzle 2: {}", part_2(&depths));
 
     Ok(())
+}
+
+fn part_1(depths: &Vec<i32>) -> usize {
+    depths.windows(2).filter(|pair| pair[0] < pair[1]).count()
+}
+
+fn part_2(depths: &Vec<i32>) -> usize {
+    part_1(
+        &depths
+            .windows(3)
+            .map(|triplet| triplet[0] + triplet[1] + triplet[2])
+            .collect(),
+    )
 }
 
 fn read_file(filename: &str) -> Vec<i32> {
