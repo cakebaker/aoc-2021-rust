@@ -18,6 +18,7 @@ fn main() -> Result<(), &'static str> {
     let commands = get_commands_from_file(&args[0]);
 
     println!("Result of puzzle 1: {}", part_1(&commands));
+    println!("Result of puzzle 2: {}", part_2(&commands));
 
     Ok(())
 }
@@ -31,6 +32,25 @@ fn part_1(commands: &[Command]) -> isize {
             Command::Up(x) => depth -= x,
             Command::Down(x) => depth += x,
             Command::Forward(x) => horizontal_position += x,
+        }
+    }
+
+    depth * horizontal_position
+}
+
+fn part_2(commands: &[Command]) -> isize {
+    let mut depth = 0;
+    let mut horizontal_position = 0;
+    let mut aim = 0;
+
+    for command in commands {
+        match command {
+            Command::Up(x) => aim -= x,
+            Command::Down(x) => aim += x,
+            Command::Forward(x) => {
+                horizontal_position += x;
+                depth += aim * x;
+            }
         }
     }
 
