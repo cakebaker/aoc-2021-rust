@@ -1,11 +1,29 @@
 use std::env;
 use std::fs;
+use std::num::ParseIntError;
+use std::str::FromStr;
 
 #[derive(Debug)]
 enum Command {
     Forward(isize),
     Down(isize),
     Up(isize),
+}
+
+impl FromStr for Command {
+    type Err = ParseIntError;
+
+    fn from_str(s: &str) -> Result<Self, <Self as FromStr>::Err> {
+        let (command, x) = s.split_once(' ').unwrap();
+        let x = x.parse()?;
+
+        Ok(match command {
+            "forward" => Command::Forward(x),
+            "down" => Command::Down(x),
+            "up" => Command::Up(x),
+            _ => unreachable!(),
+        })
+    }
 }
 
 fn main() -> Result<(), &'static str> {
@@ -61,17 +79,8 @@ fn get_commands_from_file(filename: &str) -> Vec<Command> {
     let file_content =
         fs::read_to_string(filename).expect("Something went wrong reading the file!");
 
-    file_content.lines().map(|line| parse(line)).collect()
-}
-
-fn parse(line: &str) -> Command {
-    let (a, b) = line.split_once(' ').unwrap();
-    let value = b.parse().unwrap();
-
-    match a {
-        "forward" => Command::Forward(value),
-        "down" => Command::Down(value),
-        "up" => Command::Up(value),
-        _ => unreachable!(),
-    }
+    file_content
+        .lines()
+        .map(|line| line.parse().unwrap())
+        .collect()
 }
