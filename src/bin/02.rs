@@ -71,6 +71,7 @@ fn parse(line: &str) -> Command {
     match a {
         "forward" => Command::Forward(value),
         "down" => Command::Down(value),
-        _ => Command::Up(value),
+        "up" => Command::Up(value),
+        _ => unreachable!(),
     }
 }
