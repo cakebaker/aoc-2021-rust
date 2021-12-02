@@ -8,7 +8,7 @@ fn main() -> Result<(), &'static str> {
         return Err("No file specified");
     }
 
-    let depths = read_file(&args[0]);
+    let depths = get_depths_from_file(&args[0]);
 
     println!("Result of puzzle 1: {}", part_1(&depths));
     println!("Result of puzzle 2: {}", part_2(&depths));
@@ -28,7 +28,7 @@ fn part_2(depths: &[i32]) -> usize {
         .count()
 }
 
-fn read_file(filename: &str) -> Vec<i32> {
+fn get_depths_from_file(filename: &str) -> Vec<i32> {
     let file_content =
         fs::read_to_string(filename).expect("Something went wrong reading the file!");
 
