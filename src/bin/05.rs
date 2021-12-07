@@ -14,7 +14,8 @@ fn main() -> Result<(), &'static str> {
 
     let line_segments = get_line_segments_from_file(&args[0]);
 
-    println!("Result of puzzle 1: {:?}", part_1(&line_segments));
+    println!("Result of puzzle 1: {}", part_1(&line_segments));
+    println!("Result of puzzle 2: {}", part_2(&line_segments));
 
     Ok(())
 }
@@ -36,6 +37,36 @@ fn part_1(line_segments: &[LineSegment]) -> usize {
 
     counters.values().filter(|&count| *count >= 2).count()
 }
+
+fn part_2(line_segments: &[LineSegment]) -> usize {
+    let mut counters = HashMap::new();
+
+    for line_segment in line_segments {
+        let points = line_segment.get_points();
+
+        for point in points {
+            let counter = counters.entry(point).or_insert(0);
+            *counter += 1;
+        }
+    }
+
+    counters.values().filter(|&count| *count >= 2).count()
+}
+
+/*fn count_overlapping_points(line_segments: &[LineSegment]) -> usize {
+    let mut counters = HashMap::new();
+
+    for line_segment in line_segments {
+        let points = line_segment.get_points();
+
+        for point in points {
+            let counter = counters.entry(point).or_insert(0);
+            *counter += 1;
+        }
+    }
+
+    counters.values().filter(|&count| *count >= 2).count()
+}*/
 
 #[derive(Debug, Eq, Hash, PartialEq)]
 struct Point {
@@ -85,10 +116,26 @@ impl LineSegment {
             for x in cmp::min(self.start.x, self.end.x)..=cmp::max(self.start.x, self.end.x) {
                 points.push(Point::new(x, self.start.y));
             }
-        } else {
+        } else if self.is_vertical() {
             for y in cmp::min(self.start.y, self.end.y)..=cmp::max(self.start.y, self.end.y) {
                 points.push(Point::new(self.start.x, y));
             }
+        } else {
+            let diff = cmp::max(self.start.x, self.end.x) - cmp::min(self.start.x, self.end.x);
+            println!("{}", diff);
+
+            let x_multi: isize = if self.start.x < self.end.x { -1 } else { 1 };
+            let y_multi: isize = if self.start.y < self.end.y { -1 } else { 1 };
+
+            for step in 0..=diff {
+                //               println!("{}", step);
+                points.push(Point::new(
+                    self.start.x + (step as isize * x_multi) as usize,
+                    self.start.y + (step as isize * y_multi) as usize,
+                ));
+            }
+
+            //            todo!();
         }
 
         points

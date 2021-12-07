@@ -11,6 +11,7 @@ fn main() -> Result<(), &'static str> {
     let positions = get_positions_from_file(&args[0]);
 
     println!("Result of puzzle 1: {}", part_1(&positions));
+    println!("Result of puzzle 2: {}", part_2(&positions));
 
     Ok(())
 }
@@ -24,6 +25,27 @@ fn part_1(positions: &[i32]) -> i32 {
 
         for crab_pos in positions {
             fuel += i32::abs(pos - crab_pos);
+        }
+
+        if lowest_fuel > fuel {
+            lowest_fuel = fuel;
+        }
+    }
+
+    lowest_fuel
+}
+
+fn part_2(positions: &[i32]) -> i32 {
+    let mut lowest_fuel = i32::MAX;
+    let max_pos = *positions.iter().max().unwrap();
+
+    for pos in 0..=max_pos {
+        let mut fuel = 0;
+
+        for crab_pos in positions {
+            let linear_fuel = i32::abs(pos - crab_pos);
+            let additional_fuel = ((linear_fuel as f32 - 1.0) / 2.0) * linear_fuel as f32;
+            fuel += linear_fuel + additional_fuel as i32;
         }
 
         if lowest_fuel > fuel {

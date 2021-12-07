@@ -12,6 +12,7 @@ fn main() -> Result<(), &'static str> {
     let diagnostic_report = get_diagnostic_report_from_file(&args[0]);
 
     println!("Result of puzzle 1: {}", part_1(&diagnostic_report));
+    println!("Result of puzzle 2: {}", part_2(&diagnostic_report));
 
     Ok(())
 }
@@ -48,6 +49,40 @@ fn part_1(diagnostic_report: &[Vec<char>]) -> usize {
     let epsilon_rate = usize::from_str_radix(&epsilon_rate_bits, 2).unwrap();
 
     gamma_rate * epsilon_rate
+}
+
+fn part_2(diagnostic_report: &[Vec<char>]) -> usize {
+    let mut starts_with_zero = Vec::new();
+    let mut starts_with_one = Vec::new();
+
+    for bits in diagnostic_report {
+        if bits.first().unwrap() == &'0' {
+            starts_with_zero.push(bits);
+        } else {
+            starts_with_one.push(bits);
+        }
+    }
+
+    let oxygen;
+    let co2;
+
+    if starts_with_zero.len() > starts_with_one.len() {
+        oxygen = starts_with_zero;
+        co2 = starts_with_one;
+    } else {
+        oxygen = starts_with_one;
+        co2 = starts_with_zero;
+    }
+
+    calculate_oxygen(&oxygen);
+
+    println!("{:?}", oxygen);
+    println!("{:?}", co2);
+    0
+}
+
+fn calculate_oxygen(bits: &[&Vec<char>]) -> Vec<char> {
+    vec!['a']
 }
 
 fn get_diagnostic_report_from_file(filename: &str) -> Vec<Vec<char>> {
