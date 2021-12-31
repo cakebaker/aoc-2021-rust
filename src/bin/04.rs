@@ -12,6 +12,7 @@ fn main() -> Result<(), &'static str> {
     let (numbers, mut boards) = get_numbers_and_boards_from_file(&args[0]);
 
     println!("Result of puzzle 1: {}", part_1(&numbers, &mut boards));
+    println!("Result of puzzle 2: {}", part_2(&numbers, &mut boards));
 
     Ok(())
 }
@@ -28,6 +29,29 @@ fn part_1(numbers: &[usize], boards: &mut [Board]) -> usize {
     }
 
     unreachable!();
+}
+
+fn part_2(numbers: &[usize], boards: &mut [Board]) -> usize {
+    let mut last_winner = 0;
+    let mut last_number = 0;
+    let mut max_numbers_drawn = 0;
+
+    for (board_id, board) in (&mut *boards).iter_mut().enumerate() {
+        for (i, number) in numbers.iter().enumerate() {
+            board.mark(*number);
+
+            if board.is_bingo() {
+                if i > max_numbers_drawn {
+                    max_numbers_drawn = i;
+                    last_winner = board_id;
+                    last_number = *number;
+                }
+                break;
+            }
+        }
+    }
+
+    boards[last_winner].sum_of_unmarked_fields() * last_number
 }
 
 fn get_numbers_and_boards_from_file(filename: &str) -> (Vec<usize>, Vec<Board>) {
