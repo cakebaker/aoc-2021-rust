@@ -14,7 +14,8 @@ fn main() -> Result<(), &'static str> {
 
     let line_segments = get_line_segments_from_file(&args[0]);
 
-    println!("Result of puzzle 1: {:?}", part_1(&line_segments));
+    println!("Result of puzzle 1: {}", part_1(&line_segments));
+    println!("Result of puzzle 2: {}", part_2(&line_segments));
 
     Ok(())
 }
@@ -37,14 +38,29 @@ fn part_1(line_segments: &[LineSegment]) -> usize {
     counters.values().filter(|&count| *count >= 2).count()
 }
 
+fn part_2(line_segments: &[LineSegment]) -> usize {
+    let mut counters = HashMap::new();
+
+    for line_segment in line_segments {
+        let points = line_segment.get_points();
+
+        for point in points {
+            let counter = counters.entry(point).or_insert(0);
+            *counter += 1;
+        }
+    }
+
+    counters.values().filter(|&count| *count >= 2).count()
+}
+
 #[derive(Debug, Eq, Hash, PartialEq)]
 struct Point {
-    x: usize,
-    y: usize,
+    x: isize,
+    y: isize,
 }
 
 impl Point {
-    fn new(x: usize, y: usize) -> Self {
+    fn new(x: isize, y: isize) -> Self {
         Self { x, y }
     }
 }
@@ -85,9 +101,28 @@ impl LineSegment {
             for x in cmp::min(self.start.x, self.end.x)..=cmp::max(self.start.x, self.end.x) {
                 points.push(Point::new(x, self.start.y));
             }
-        } else {
+        } else if self.is_vertical() {
             for y in cmp::min(self.start.y, self.end.y)..=cmp::max(self.start.y, self.end.y) {
                 points.push(Point::new(self.start.x, y));
+            }
+        } else {
+            let steps = isize::abs(self.end.x - self.start.x);
+
+            let (x_dir, y_dir) = if self.start.x < self.end.x && self.start.y < self.end.y {
+                (1, 1)
+            } else if self.start.x < self.end.x && self.start.y > self.end.y {
+                (1, -1)
+            } else if self.start.x > self.end.x && self.start.y < self.end.y {
+                (-1, 1)
+            } else {
+                (-1, -1)
+            };
+
+            for step in 0..=steps {
+                points.push(Point::new(
+                    self.start.x + (x_dir * step),
+                    self.start.y + (y_dir * step),
+                ));
             }
         }
 
