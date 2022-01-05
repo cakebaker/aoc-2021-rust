@@ -11,20 +11,27 @@ fn main() -> Result<(), &'static str> {
     let age_list = get_age_list_from_file(&args[0]);
 
     println!("Result of puzzle 1: {}", part_1(&age_list));
+    println!("Result of puzzle 2: {}", part_2(&age_list));
 
     Ok(())
 }
 
 fn part_1(age_list: &[usize]) -> usize {
-    const MAX_DAYS: usize = 80;
+    count_fish_after_days(age_list, 80)
+}
 
+fn part_2(age_list: &[usize]) -> usize {
+    count_fish_after_days(age_list, 256)
+}
+
+fn count_fish_after_days(age_list: &[usize], days: usize) -> usize {
     let mut counters: [usize; 9] = [0; 9];
 
     for age in age_list {
         counters[*age] += 1;
     }
 
-    for _ in 1..=MAX_DAYS {
+    for _ in 1..=days {
         let zeros = counters[0];
 
         counters.rotate_left(1);
